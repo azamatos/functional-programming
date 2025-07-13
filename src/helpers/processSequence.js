@@ -40,21 +40,25 @@ const processSequence = async ({
 
   const roundedValue = pipe(parseFloat, Math.round, tap(writeLog))(value);
 
-  const binaryString = await asyncPipe(
-    convertToBase(10, 2),
-    tap(writeLog)
-  )(roundedValue);
+  try {
+    const binaryString = await asyncPipe(
+      convertToBase(10, 2),
+      tap(writeLog)
+    )(roundedValue);
 
-  const lengthOfBinary = pipe((str) => str.length, tap(writeLog))(binaryString);
+    const lengthOfBinary = pipe((str) => str.length, tap(writeLog))(binaryString);
 
-  const squaredLength = pipe(
-    (x) => Math.pow(x, 2),
-    tap(writeLog)
-  )(lengthOfBinary);
+    const squaredLength = pipe(
+      (x) => Math.pow(x, 2),
+      tap(writeLog)
+    )(lengthOfBinary);
 
-  const modBy3 = pipe((x) => x % 3, tap(writeLog))(squaredLength);
+    const modBy3 = pipe((x) => x % 3, tap(writeLog))(squaredLength);
 
-  await asyncPipe(handleGetAnimalById, handleSuccess)(modBy3);
+    await asyncPipe(handleGetAnimalById, handleSuccess)(modBy3);
+  } catch (error) {
+    handleError("ApiError");
+  }
 };
 
 const convertToBase = (from, to) => (number) =>
